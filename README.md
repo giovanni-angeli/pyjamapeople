@@ -7,20 +7,20 @@ without the limits of the http dialogs.
 TAGS: tornado asyncio websocket 
 
 3. create a virtualenv 
->     $ export VIRTEN_VROOT=desired-virtenv_root-path
->     $ mkdir ${VIRTEN_VROOT}
->     $ virtualenv -p /usr/bin/python3 ${VIRTEN_VROOT}
+>     $ export VIRTENV_ROOT=desired-virtenv_root-path
+>     $ mkdir ${VIRTENV_ROOT}
+>     $ virtualenv -p /usr/bin/python3 ${VIRTENV_ROOT}
 
 2. clone this project in ${PROJECT_ROOT}
->     $ export PROJECT_ROOT=<desired-project_root-path>
+>     $ git clone git@github.com:giovanni-angeli/pyjamapeople.git
 
 1. build Install in edit mode:
+>     $ . ${VIRTENV_ROOT}/bin/activate
 >     $ cd ${PROJECT_ROOT}               
->     $ . ${VIRTEN_VROOT}/bin/activate
 >     $ pip install -e ./
 
 4. Run:
->     $ (. ${VIRTEN_VROOT}/bin/activate ; pyjamapeolple &)
+>     $ (. ${VIRTENV_ROOT}/bin/activate ; pyjamapeolple &)
 >     $ chromium http://127.0.0.1:8000/ &
 >     $ firefox http://127.0.0.1:8000/ &
 
