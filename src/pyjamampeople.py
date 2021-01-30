@@ -44,100 +44,6 @@ def get_application_instance():
     return GLOBAL_APPLICATION_INSTANCE
 
 
-def content_producer():
-    """
-Fonte: Musixmatch
-Compositori: Zappa F
-Testo di Po‐Jama People © Munchkin Music Co
-    """
-
-    _ = """
-Some people's hot
-Some people's cold
-Some people's not very
-Swift to behold
-Some people do it
-Some see right through it
-Some wear pyjamas
-If only they knew it
-The pyjama people are boring me to pieces
-Feel like I am wasting my time
-They all got flannel up 'n down 'em
-A little trap-door back aroun' 'em
-An' some cozy little footies on their mind
-Po-jama people!
-Po-jama people, people!
-They sure do make you sleepy
-With the things they might say
-Po-jama people!
-Po-jama people, people!
-Mother Mary 'n Jozuf, I wish they'd all go away!
-Po-jama people!
-It's a po-jama people special . . .
-Take one home with you, save a dollar today
-Po-jama people!
-Po-jama people, people!
-Wrap 'em up
-Roll 'em out
-Get 'em out of my way
-Hein nya-nya-hein nya-nya-hein nya-nya-hein
-HOEY! HOEY! HOEY!
-Wrap 'em up
-Roll 'em out
-Get 'em out of my way
-Hein nya-nya-hein nya-nya-hein nya-nya-hein
-HOEY! HOEY! HOEY!
-Wrap 'em up
-Roll 'em out
-Get 'em out of my way
-Hein nya-nya-hein nya-nya-hein nya-nya-hein
-HOEY! HOEY! HOEY!
-now some people's hot
-An' some people's cold
-(Well, Lawd . . .) an' some people's not very
-(Very) swift to behold (swifty!)
-(I told you) some people do it (do it!)
-(Yes, they do!) (No . . .)
-Some see right through it
-(See right through it!)
-An' some wear PO-JAMAS
-If only they knew it
-The pyjama people are boring me to pieces
-They make me feel like I am wasting my time
-They all got flannel up 'n down 'em
-A little trap-door back aroun' 'em
-An' some cozy little footies on their mind
-Po-jama people!
-Po-jama people, people!
-Lawd, they make you sleepy
-With the things they might say (hey, yeah-hey . . .)
-Po-jama people!
-(Well . . . now) Po-jama people, people!
-(I said) ARF! ARF! ARF!
-I wish they'd all go away!
-Po-jama people! (People!) (Oh, yeah)
-Po-jama people special . . .
-(I said, I said, I said)
-Take one home with you, & save a dollar today
-Po-jama people!
-(It's a) Po-jama people, people! (Special)
-Wrap 'em up
-An' roll 'em out
-Get 'em out of my way
-HOEY! HOEY! HOEY!
-Wrap 'em up
-An' roll 'em out
-Get 'em out of my way
-HOEY! HOEY! HOEY!
-Wrap 'em up
-Roll 'em out
-Get 'em out of my way
-HOEY! HOEY! HOEY!
-"""
-
-    return random.choice([t for t in _.split('\n') if t])
-
-
 class HttpHandler(tornado.web.RequestHandler):
 
     def get(self):
@@ -257,6 +163,7 @@ class Application:
         asyncio.get_event_loop().run_forever()
 
 
+
 def main():
 
     logging.basicConfig(
@@ -265,6 +172,100 @@ def main():
 
     a = get_application_instance()
     a.run()
+
+
+def content_producer():
+    """
+Fonte: Musixmatch
+Compositori: Zappa F
+Testo di Po‐Jama People © Munchkin Music Co
+    """
+
+    _ = """
+Some people's hot
+Some people's cold
+Some people's not very
+Swift to behold
+Some people do it
+Some see right through it
+Some wear pyjamas
+If only they knew it
+The pyjama people are boring me to pieces
+Feel like I am wasting my time
+They all got flannel up 'n down 'em
+A little trap-door back aroun' 'em
+An' some cozy little footies on their mind
+Po-jama people!
+Po-jama people, people!
+They sure do make you sleepy
+With the things they might say
+Po-jama people!
+Po-jama people, people!
+Mother Mary 'n Jozuf, I wish they'd all go away!
+Po-jama people!
+It's a po-jama people special . . .
+Take one home with you, save a dollar today
+Po-jama people!
+Po-jama people, people!
+Wrap 'em up
+Roll 'em out
+Get 'em out of my way
+Hein nya-nya-hein nya-nya-hein nya-nya-hein
+HOEY! HOEY! HOEY!
+Wrap 'em up
+Roll 'em out
+Get 'em out of my way
+Hein nya-nya-hein nya-nya-hein nya-nya-hein
+HOEY! HOEY! HOEY!
+Wrap 'em up
+Roll 'em out
+Get 'em out of my way
+Hein nya-nya-hein nya-nya-hein nya-nya-hein
+HOEY! HOEY! HOEY!
+now some people's hot
+An' some people's cold
+(Well, Lawd . . .) an' some people's not very
+(Very) swift to behold (swifty!)
+(I told you) some people do it (do it!)
+(Yes, they do!) (No . . .)
+Some see right through it
+(See right through it!)
+An' some wear PO-JAMAS
+If only they knew it
+The pyjama people are boring me to pieces
+They make me feel like I am wasting my time
+They all got flannel up 'n down 'em
+A little trap-door back aroun' 'em
+An' some cozy little footies on their mind
+Po-jama people!
+Po-jama people, people!
+Lawd, they make you sleepy
+With the things they might say (hey, yeah-hey . . .)
+Po-jama people!
+(Well . . . now) Po-jama people, people!
+(I said) ARF! ARF! ARF!
+I wish they'd all go away!
+Po-jama people! (People!) (Oh, yeah)
+Po-jama people special . . .
+(I said, I said, I said)
+Take one home with you, & save a dollar today
+Po-jama people!
+(It's a) Po-jama people, people! (Special)
+Wrap 'em up
+An' roll 'em out
+Get 'em out of my way
+HOEY! HOEY! HOEY!
+Wrap 'em up
+An' roll 'em out
+Get 'em out of my way
+HOEY! HOEY! HOEY!
+Wrap 'em up
+Roll 'em out
+Get 'em out of my way
+HOEY! HOEY! HOEY!
+"""
+
+    return random.choice([t for t in _.split('\n') if t])
 
 
 if __name__ == '__main__':
