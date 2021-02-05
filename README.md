@@ -1,7 +1,7 @@
 # Pyjamapeolple
 
 a simple but fully featured example of how to use **tornado**, **asyncio** and **websocket** together 
-to build an application delagating the frontend UI to a browser, local or remote,
+to build an application delegating the frontend UI to a browser, local or remote,
 without the limits of the http dialog.
 
 TAGS: tornado asyncio websocket 
