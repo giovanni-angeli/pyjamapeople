@@ -8,13 +8,27 @@ import glob
 
 from setuptools import setup, find_packages
 
+import os
+import glob
+
+from setuptools import setup, find_packages
+
+here = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(here, '__version__'), encoding='utf-8') as f:
+    __version__ = f.read().strip()
+
+with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+    __readme__ = f.read().strip()
+
 __app_name__ = 'pyjamampeople'
 
 def main():
     setup(
         name=__app_name__,
-        version='0.0.1',
+        version=__version__,
         description='example using asyncio, tornado and websocket together',
+        long_description_content_type='text/x-rst',
+        long_description=__readme__,
         url='',
         author='giovanni angeli',
         author_email='giovanni.angeli6@gmail.com',
@@ -27,7 +41,7 @@ def main():
         packages=find_packages(where='src'),
         package_dir={'': 'src'},
         data_files=[
-            ('templates', list(glob.glob('templates'))),
+            ('templates', list(glob.glob('templates/*'))),
         ],
         include_package_data=True,
         scripts=[
