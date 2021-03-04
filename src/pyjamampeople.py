@@ -26,12 +26,53 @@ LISTEN_PORT = 8000
 LISTEN_ADDRESS = '127.0.0.1'
 
 APPLICATION_OPTIONS = dict(
-    debug=True, 
-    autoreload=True, 
-    template_path=os.path.join(HERE, "..", "templates"), 
+    debug=True,
+    autoreload=True,
+    template_path=os.path.join(HERE, "..", "templates"),
     compiled_template_cache=False)
 
 GLOBAL_APPLICATION_INSTANCE = None
+
+
+async def wait_for_condition(
+        condition,
+        extra_info=None,
+        silent=False,
+        timeout=10,
+        callback=None,
+        stability_count=2,
+        step=0.1):
+
+    ret = None
+    t0 = time.time()
+    counter = 0
+    try:
+        while time.time() - t0 < timeout:
+
+            if condition and condition():
+                counter += 1
+                if counter >= stability_count:
+                    if callback:
+                        callback()
+                    ret = True
+                    break
+            else:
+                counter = 0
+
+            await asyncio.sleep(step)
+
+        if not ret and not silent:
+
+            _ = f"timeout expired! timeout:{timeout}.\n"
+            if extra_info:
+                _ += str(extra_info)
+
+            logging.warning(_)
+
+    except Exception:  # pylint: disable=broad-except
+        logging.error(traceback.format_exc())
+
+    return ret
 
 
 def get_application_instance():
@@ -93,7 +134,7 @@ class WebsockHandler(tornado.websocket.WebSocketHandler):
 
 class Heartbeat:
 
-    async def run(self):
+    async def run(self, task_id):
 
         while True:
 
@@ -115,17 +156,20 @@ class Heartbeat:
                     for i in range(1, 4):
                         for j in range(1, 6):
                             target_id = f"data_{i}_{j}"
-                            stuff = content_producer()
+                            stuff = await get_application_instance().get_stuff_from_resource(task_id)
                             msg = {
                                 'time': time.asctime(),
-                                'js': 'document.getElementById("{}").innerHTML="{}";'.format(target_id, stuff),
+                                'js': 'document.getElementById("{}").innerHTML="task_id:{} {}";'.format(
+                                    target_id,
+                                    task_id,
+                                    stuff),
                             }
                             h.write_message(msg)
 
                 except tornado.websocket.WebSocketClosedError:
                     pass
 
-                except Exception:
+                except Exception:    # pylint: disable=broad-except
                     logging.error(traceback.format_exc())
 
             await asyncio.sleep(1)
@@ -139,6 +183,37 @@ class Application:
     ]
 
     web_socket_channels = []
+    who_is_locking = []
+    waiting_tasks = []
+
+    async def get_stuff_from_resource(self, task_id):
+
+        def condition():
+            return not self.who_is_locking
+
+        ret = None
+
+        self.waiting_tasks.append(task_id)
+        r = await wait_for_condition(condition, silent=0, timeout=5, step=.001, extra_info=f"task_id:{task_id} ")
+        self.waiting_tasks.remove(task_id)
+
+        if r:
+            self.who_is_locking.append(task_id)
+            logging.debug(f" who_is_locking:{self.who_is_locking},".ljust(20) + f" waiting_tasks:{self.waiting_tasks}")
+            assert len(self.who_is_locking) == 1
+            assert self.who_is_locking not in self.waiting_tasks
+
+            await asyncio.sleep(.001)
+            ret = content_producer()
+            await asyncio.sleep(.001)
+
+            self.who_is_locking.remove(task_id)
+            logging.debug(f" who_is_locking:{self.who_is_locking},".ljust(20) + f" waiting_tasks:{self.waiting_tasks}")
+            assert len(self.who_is_locking) == 0
+
+            await asyncio.sleep(.00001)
+
+        return ret
 
     def start_tornado(self):
 
@@ -152,8 +227,10 @@ class Application:
 
         logging.info("starting backend task...")
 
-        _future = Heartbeat().run()
-        asyncio.ensure_future(_future)
+        for i in range(100):
+            _future = Heartbeat().run(i)
+            asyncio.ensure_future(_future)
+            time.sleep(.01)
 
     def run(self):
 
@@ -161,7 +238,6 @@ class Application:
         self.start_backend_task()
 
         asyncio.get_event_loop().run_forever()
-
 
 
 def main():
