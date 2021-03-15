@@ -20,7 +20,7 @@ TAGS: tornado asyncio websocket
 >     $ pip install -e ./
 
 4. Run:
->     $ (. ${VIRTENV_ROOT}/bin/activate ; pyjamapeolple &)
+>     $ (. ${VIRTENV_ROOT}/bin/activate ; pyjamapeople &)
 >     $ chromium http://127.0.0.1:8000/ &
 >     $ firefox http://127.0.0.1:8000/ &
 

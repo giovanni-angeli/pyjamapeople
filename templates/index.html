@@ -30,7 +30,7 @@
             #title {
                 color:#882222;
             }
-            #answer_target {
+            #answer_display {
                 color: #990000;
                 background-color: #FFFF99;
                 padding: 10px;
@@ -53,17 +53,17 @@
             <input type="text" id="message" value="Hot meat!"/>
             <input type="submit" id="send_btn" value="send" onclick="send_btn_clicked();" disabled="true"/>
         </div>
-        <div id="answer_target">***</div>
+        <div id="answer_display">***</div>
         <br></br>
-        <div id="heartbeat_target">***</div>
+        <div>time:[<span id="time_display">***</span>], channel counter:<span id="channel_counter">***</span></div>
         <div id="pushed_data_container">
             <table cellpadding="8" align="center">
                 <tr><th width="10">-</th><th>1</th><th>2</th><th>3</th></tr>
-                <tr><td>A</td><td id="data_1_1">*</td><td id="data_2_1">*</td><td id="data_3_1">*</td></tr>
-                <tr><td>B</td><td id="data_1_2">*</td><td id="data_2_2">*</td><td id="data_3_2">*</td></tr>
-                <tr><td>C</td><td id="data_1_3">*</td><td id="data_2_3">*</td><td id="data_3_3">*</td></tr>
-                <tr><td>D</td><td id="data_1_4">*</td><td id="data_2_4">*</td><td id="data_3_4">*</td></tr>
-                <tr><td>E</td><td id="data_1_5">*</td><td id="data_2_5">*</td><td id="data_3_5">*</td></tr>
+                <tr><td>A</td><td id="datatable_cell_1_1">*</td><td id="datatable_cell_2_1">*</td><td id="datatable_cell_3_1">*</td></tr>
+                <tr><td>B</td><td id="datatable_cell_1_2">*</td><td id="datatable_cell_2_2">*</td><td id="datatable_cell_3_2">*</td></tr>
+                <tr><td>C</td><td id="datatable_cell_1_3">*</td><td id="datatable_cell_2_3">*</td><td id="datatable_cell_3_3">*</td></tr>
+                <tr><td>D</td><td id="datatable_cell_1_4">*</td><td id="datatable_cell_2_4">*</td><td id="datatable_cell_3_4">*</td></tr>
+                <tr><td>E</td><td id="datatable_cell_1_5">*</td><td id="datatable_cell_2_5">*</td><td id="datatable_cell_3_5">*</td></tr>
             </table>
         </div>    
         <small id="footer">{{ footer }}</small>
@@ -113,7 +113,9 @@
         var send_btn_clicked = function () {
             var msg_ = document.getElementById("message").value;
             logging("sending message to ws: '" + msg_ + "'");
-            ws_instance.send(msg_);
+            for (i = 0; i < 10; i++) { 
+                ws_instance.send(msg_ + " (" + i + ")");
+            }
         }
         var on_ws_error = function (evt) {
             logging("error: " + evt.data);
@@ -134,8 +136,11 @@
         var on_ws_message = function (evt) {
             try {
                 var data = JSON.parse(evt.data);            
-                eval(data.js);
-
+//~                 eval(data.js);
+                if ((data.innerHTML) && (data.element_id)) {
+                    var el = document.getElementById(data.element_id)
+                    if (el) { el.innerHTML = data.innerHTML; }
+                }
             } catch(err) {
                 logging("err:" + err);
             }
@@ -144,9 +149,10 @@
         var init = function () {
              open_btn_clicked();
         }
+    </script>
 
+    <script>
         init();
-
     </script>
 
 </html>
