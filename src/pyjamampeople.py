@@ -227,7 +227,7 @@ class Application:
 
     def start_tornado(self):
 
-        logging.info("starting tornado webserver on {}:{}...".format(LISTEN_ADDRESS, LISTEN_PORT))
+        logging.info("starting tornado webserver on http://{}:{}...".format(LISTEN_ADDRESS, LISTEN_PORT))
 
         app = tornado.web.Application(self.url_map, **APPLICATION_OPTIONS)
         app.listen(LISTEN_PORT, LISTEN_ADDRESS)
