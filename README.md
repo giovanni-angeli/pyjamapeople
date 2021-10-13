@@ -1,4 +1,4 @@
-# Pyjamapeolple
+# Pyjamapeople
 
 a simple but fully featured example of how to use **tornado**, **asyncio** and **websocket** together 
 to build an application delegating the frontend UI to a browser, local or remote,
