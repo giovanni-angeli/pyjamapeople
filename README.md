@@ -26,3 +26,4 @@ TAGS: tornado asyncio websocket
 
 ![Screenshot](doc/Screenshot_2021-01-30_14-58-59.png)#
 
+export VIRTENV_ROOT=/opt/pyjamapeople/venv;. ${VIRTENV_ROOT}/bin/activate
