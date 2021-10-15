@@ -18,15 +18,48 @@ import codecs
 from tornado import template as tornado_template
 
 
-class ImageListWidget:
+class TimeDisplayWidget:
 
-    def __init__(self, parent, img_list):
+    def __init__(self, parent):
 
         self.parent = parent
-        self.img_list = img_list
-        self.element_id = 'img_container'
+        self.element_id = 'time_display'
+        self.t0 = time.time()
 
     def render(self):
+
+        bgcol = "#FFFF{0:02X}".format(155 + int(20 * (time.time() - self.t0)) % 100)
+
+        _html = """
+        <label style="background-color:{0};">backend time:{1}</label>
+        """.format(bgcol, time.asctime())
+
+        return _html
+
+    def show(self, ws_socket=None):
+
+        html_ = self.render()
+
+        if self.parent and self.parent.positron_instance:
+            self.parent.positron_instance.call_on_front(
+                _callable='set_innerHTML',
+                args={'innerHTML': html_, 'element_id': self.element_id},
+                ws_socket=ws_socket)
+
+
+class ImageListWidget:
+
+    def __init__(self, parent):
+
+        self.parent = parent
+        self.element_id = 'img_container'
+
+        _here = os.path.dirname(os.path.abspath(__file__))
+        self.img_list = os.listdir(os.path.join(_here, '..', 'static', 'img'))
+
+    def render(self):
+
+        random.shuffle(self.img_list)
 
         _html = ''
         for img in self.img_list:
@@ -36,17 +69,21 @@ class ImageListWidget:
         return _html
 
     def show(self, ws_socket):
+
         html_ = self.render()
-        self.parent.positron_instance.call_on_front(
-            _callable='set_innerHTML',
-            args={'innerHTML': html_, 'element_id': self.element_id},
-            ws_socket=ws_socket)
+
+        if self.parent and self.parent.positron_instance:
+            self.parent.positron_instance.call_on_front(
+                _callable='set_innerHTML',
+                args={'innerHTML': html_, 'element_id': self.element_id},
+                ws_socket=ws_socket)
+
 
 class CallableListWidget:
 
-    def __init__(self, obj):
+    def __init__(self, parent):
 
-        self.obj = obj
+        self.parent = parent
 
         self.element_id = 'exported_callables_from_py_to_js_container'
 
@@ -67,8 +104,8 @@ class CallableListWidget:
             return not name.startswith("_") and asyncio.iscoroutinefunction(_callable)
 
         _list = []
-        for name in dir(self.obj):
-            _funct = getattr(self.obj, name)
+        for name in dir(self.parent):
+            _funct = getattr(self.parent, name)
             if _filter(name, _funct):
                 description = inspect.getdoc(_funct)
                 _list.append(dict(name=name, description=description))
@@ -83,10 +120,11 @@ class CallableListWidget:
 
         html_ = self.render()
 
-        self.obj.positron_instance.call_on_front(
-            _callable='set_innerHTML',
-            args={'innerHTML': html_, 'element_id': self.element_id},
-            ws_socket=ws_socket)
+        if self.parent and self.parent.positron_instance:
+            self.parent.positron_instance.call_on_front(
+                _callable='set_innerHTML',
+                args={'innerHTML': html_, 'element_id': self.element_id},
+                ws_socket=ws_socket)
 
 
 class Application:
@@ -106,21 +144,13 @@ class Application:
 
         logging.info(f"START")
 
-        t0 = time.time()
+        time_display_widget = TimeDisplayWidget(self)
 
         while self.running:
 
             try:
-                if self.positron_instance:
 
-                    self.positron_instance.call_on_front(
-                        _callable='set_innerHTML',
-                        args={'innerHTML': time.asctime(), 'element_id': 'time_display'})
-
-                    bgcol = "#FFFF{0:02X}".format(155 + int(20 * (time.time() - t0)) % 100)
-                    self.positron_instance.call_on_front(
-                        _callable='set_attribute',
-                        args={'name': 'style', 'value': f'background-color: {bgcol};', 'element_id': 'time_display'})
+                time_display_widget.show()
 
             except Exception:    # pylint: disable=broad-except
                 logging.error(traceback.format_exc())
@@ -200,11 +230,11 @@ class Application:
 
         duration = float(value)
 
-        _here = os.path.dirname(os.path.abspath(__file__))
-        _list = os.listdir(os.path.join(_here, '..', 'static', 'img'))
+        image_list_widget = ImageListWidget(self)
+
         t0 = time.time()
         while time.time() - t0 < duration:
 
-            random.shuffle(_list)
-            ImageListWidget(self, _list).show(ws_socket)
+            image_list_widget.show(ws_socket)
+
             await asyncio.sleep(.2)
