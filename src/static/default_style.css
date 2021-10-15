@@ -1,0 +1,42 @@
+body {
+	font-family: Monospace;
+	text-align: center;
+	min-width: 600px;
+}
+
+tr:nth-of-type(odd) { 
+	background: #DFDFDF; 
+}
+
+tr:nth-of-type(even) { 
+	background: #E6E6E6; 
+}
+
+table { 
+	table-layout: fixed;
+	width: 90%;
+}
+
+#header_panel {
+	background-color: #FFFF99;
+	padding: 4px;
+}
+
+#title {
+	background-color: #FFFF99;
+	color:#882222;
+	text-align:left;
+	font-size: 22px;
+	margin: 12px;
+}
+
+#time_display {
+	border: 1px dashed #999999;
+	margin: 4px;
+	font-size: 22px;
+	color:#662222;
+}
+
+#exported_callables_from_py_to_js_container {
+	text-align: left;
+}

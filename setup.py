@@ -41,7 +41,8 @@ def main():
         packages=find_packages(where='src'),
         package_dir={'': 'src'},
         data_files=[
-            ('templates', list(glob.glob('templates/*'))),
+            ('templates', list(glob.glob('src/templates/*'))),
+            ('statics', list(glob.glob('src/statics/*'))),
         ],
         include_package_data=True,
         scripts=[

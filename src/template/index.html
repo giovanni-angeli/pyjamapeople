@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+	<head>
+		<title>{{ title }}</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<script type="text/javascript" src="/static/positron.js"></script>
+		<link type="text/css" rel="stylesheet" href="/static/default_style.css"/>
+	</head>
+ 
+	<body>
+		<div id="header_panel">
+			<label id="title">{{ title }}</label>
+			<span id="ws_connection">
+				<label for="host">host:</label><input type="text" id="host" value="127.0.0.1"/>
+				<label for="port">port:</label><input type="text" id="port" value="8000"/>
+				<label for="uri">uri:</label><input type="text" id="uri" value="/websocket"/>
+				<input type="submit" id="open_btn" value="open" onclick="open_btn_clicked();"/>
+				<input type="submit" id="close_btn" value="close" onclick="close_btn_clicked();" disabled="true"/>
+			</span>
+		</div>
+		<hr></hr>
+		<div>
+			backend time:<label id="time_display">***</label>
+		</div>
+		<hr></hr>
+		<div id="exported_callables_from_py_to_js_container">
+		</div>    
+		<br></br>
+		<div id="img_container">
+			<img src="/static/img/PositronDiscovery.jpg" alt="not found"></img>
+		</div>    
+		<br></br>
+		<div id="logger_area_container">
+			<textarea id="logger_area" maxlength="50" rows="20" cols="100">
+			</textarea>
+		</div>    
+		<hr></hr>
+		<div id="footer_panel">
+			<small>{{ footer }}</small>
+		</div>
+	</body>
+
+	<script>
+
+		var _btn_call_on_backend = function(key) {
+			var x = document.getElementById(key + '_args');
+			Positron.call_on_backend(key, {'value': x.value});
+		};
+
+		var logging = function(msg) {
+			_ = document.getElementById("logger_area").innerHTML;
+			document.getElementById("logger_area").innerHTML = msg.substring(0, 500) + "\n" + _;
+			console.log(msg);
+			Positron.call_on_backend('log_from_front', [], {'msg': msg});
+		};
+
+		var open_btn_clicked = function () {
+			var host = document.getElementById("host").value;
+			var port = document.getElementById("port").value;
+			var uri  = document.getElementById("uri").value;
+			Positron.open_ws(host, port, uri);
+		};
+
+		var close_btn_clicked = function () {
+			Positron.call_on_backend('log_from_front', [], {'msg': 'closing ws ...'});
+			Positron.close_ws(host, port, uri);
+		};
+
+		var toggle_view = function(el_id) {
+			var x = document.getElementById(el_id);
+			x.style.display = x.style.display === 'none' ? 'block' : 'none';
+		};
+
+		var send_msg_to_backend = function() {
+			var x = document.getElementById('msg_to_backend');
+			Positron.call_on_backend('log_from_front', {'msg': x.value});
+		};
+
+		var expose_callables_to_py = function () {
+			Positron.expose_callables_to_py({
+				'set_innerHTML': function (args) {
+					if ((args.innerHTML) && (args.element_id)) {
+						var el = document.getElementById(args.element_id)
+						if (el) { el.innerHTML = args.innerHTML; }
+					}
+				},
+				'set_attribute': function (args) {
+					if ((args.name) && (args.element_id)) {
+						var el = document.getElementById(args.element_id)
+						if (el) { el.setAttribute(args.name, args.value); }
+					}
+				},
+				'alert_message': function (args) {
+					alert("backend says: args:" + JSON.stringify(args));
+				}
+			})
+		};
+
+		var init = function () {
+			expose_callables_to_py();
+			toggle_view('logger_area_container');
+			open_btn_clicked();
+		};
+
+		init();
+	</script>
+
+</html>
