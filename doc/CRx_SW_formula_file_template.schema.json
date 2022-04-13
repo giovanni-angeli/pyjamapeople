@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "Brand": {
+          "type": "string"
+        },
+        "Region": {
+          "type": "string"
+        },
+        "Colour code": {
+          "type": "string"
+        },
+        "Variant": {
+          "type": "string"
+        },
+        "Colour name": {
+          "type": "string"
+        },
+        "Second-name": {
+          "type": "string"
+        },
+        "Year": {
+          "type": "string"
+        },
+        "Remark": {
+          "type": "string"
+        },
+        "Quality": {
+          "type": "string"
+        },
+        "Undercoat": {
+          "type": "string"
+        },
+        "Pictograms": {
+          "type": "string"
+        },
+        "Mutation date": {
+          "type": "string"
+        },
+        "Quantity": {
+          "type": "string"
+        },
+        "Cumulative": {
+          "type": "string"
+        },
+        "extra_info": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": []
+    },
+    "ingredients": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pigment_name": {
+            "type": "string"
+          },
+          "weight(g)": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pigment_name",
+          "weight(g)"
+        ]
+      }
+    }
+  },
+  "required": [
+    "version",
+    "system",
+    "meta",
+    "ingredients"
+  ]
+}
+
